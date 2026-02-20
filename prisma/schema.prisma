@@ -1,0 +1,60 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  password  String
+  name      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  messages  Message[]
+  sessions  Session[]
+}
+
+model Message {
+  id        String   @id @default(uuid())
+  content   String
+  userId    String
+  roomId    String   @default("general")
+  createdAt DateTime @default(now())
+
+  user      User     @relation(fields: [userId], references: [id])
+}
+
+model Session {
+  id          String   @id @default(uuid())
+  title       String
+  description String?
+  startTime   DateTime
+  endTime     DateTime?
+  hostId      String
+  createdAt   DateTime @default(now())
+
+  host        User     @relation(fields: [hostId], references: [id])
+}
+
+model FlashcardDeck {
+  id          String   @id @default(uuid())
+  title       String
+  description String?
+  createdAt   DateTime @default(now())
+  
+  cards       Flashcard[]
+}
+
+model Flashcard {
+  id        String   @id @default(uuid())
+  front     String
+  back      String
+  deckId    String
+
+  deck      FlashcardDeck @relation(fields: [deckId], references: [id], onDelete: Cascade)
+}
