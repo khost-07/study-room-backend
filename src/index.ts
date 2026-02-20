@@ -28,6 +28,11 @@ app.use(express.json());
 app.use('/api/auth', authRoutes);
 app.use('/api/flashcards', flashcardRoutes);
 
+// Base Route
+app.get('/', (req, res) => {
+    res.send('StudyRoom Backend is Running! WebSocket and API server active.');
+});
+
 // Basic health check endpoint
 app.get('/api/health', (req, res) => {
     res.json({ status: 'ok', time: new Date() });
